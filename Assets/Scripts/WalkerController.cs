@@ -34,6 +34,11 @@ public class WalkerController : MonoBehaviour
         }
         moveInput = moveAction.ReadValue<Vector2>().x;
         Debug.Log($"moveInput = {moveInput}");
+        if (jumpAction.WasPressedThisFrame())
+        {
+            jumpRequested = true;
+        }
+
     }
     void FixedUpdate()
     {
@@ -42,6 +47,12 @@ public class WalkerController : MonoBehaviour
         groundCheck.position, groundCheckRadius, groundLayer) != null;
         if (isGrounded != wasGrounded) Debug.Log($"isGrounded -> {isGrounded}");
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
+        if (jumpRequested && isGrounded)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpVelocity);
+        }
+        jumpRequested = false;
+
     }
     void OnDrawGizmosSelected()
     {
